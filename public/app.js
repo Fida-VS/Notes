@@ -5,16 +5,16 @@ document.addEventListener('click', event => {
     remove(id).then(() => {
       event.target.closest('li').remove()
     })
-  }
-
-  if (event.target.dataset.type === 'edit') {
+  } else if (event.target.dataset.type === 'edit') {
 
     const newTitle = prompt('Введите новое название', '')
 
     const id = event.target.dataset.id
 
-    edit(id, newTitle).then(() => {
-      event.target.closest('li').textContent = newTitle
+    edit(id, newTitle)
+    .then(() => {event.target.closest('li').textContent = newTitle})
+    .catch((error) => {
+      console.log(error)
     })
   }
 
@@ -28,7 +28,7 @@ async function remove(id) {
 async function edit(id, newText) {
   await fetch(`/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-type': 'application/json;charset=utf-8' },
     body: JSON.stringify({ title: newText })
   })
 }
