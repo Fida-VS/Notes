@@ -35,6 +35,7 @@ app.post('/', async (req, res) => {
 })
 
 app.put('/:id', async (req, res) => {
+
   await editNote(req.params.id, req.body.title)
   res.render('index', {
     title: 'Express App',

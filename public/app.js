@@ -11,11 +11,19 @@ document.addEventListener('click', event => {
 
     const id = event.target.dataset.id
 
+if(newTitle === null || newTitle === ''){
+ return
+} else {
     edit(id, newTitle)
-    .then(() => {event.target.closest('li').textContent = newTitle})
+    .then(() => {
+      event.target.closest('li').textContent = newTitle
+    })
     .catch((error) => {
       console.log(error)
     })
+  }
+
+
   }
 
 })

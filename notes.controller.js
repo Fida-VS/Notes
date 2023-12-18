@@ -1,7 +1,6 @@
 const fs = require('fs/promises')
 const path = require('path')
 const chalk = require('chalk')
-const { get } = require('http')
 
 const notesPath = path.join(__dirname, 'db.json')
 
@@ -66,5 +65,5 @@ notes.forEach(note => {
 }
 
 module.exports = {
-    addNote, printNotes, removeNote, editNote
+    addNote, printNotes, removeNote, editNote, getNotes
 }
