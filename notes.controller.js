@@ -1,69 +1,41 @@
-const fs = require('fs/promises')
-const path = require('path')
-const chalk = require('chalk')
 
-const notesPath = path.join(__dirname, 'db.json')
+const path = require("path");
+const chalk = require("chalk");
+const Note = require("./models/Note");
 
-async function addNote(title){
+async function addNote(title, owner) {
 
- const notes = await getNotes()
+    await Note.create({ title, owner })
+  
+  console.log(chalk.bgGreen("Note was added"));
+};
 
-    const note = {
-        title,
-        id: Date.now().toString()
-    }
+async function editNote(noteData, owner) {
+const result = await Note.updateOne({ _id: noteData.id, owner }, {title: noteData.title})
 
-    notes.push(note)
-
-    await fs.writeFile(notesPath, JSON.stringify(notes))
-    console.log(chalk.bgGreen('Note was added'))
-
+if(result.matchedCount === 0){
+  throw new Error('No note to edit')
+}
+  console.log(chalk.bgBlue("Note was edited"));
 }
 
+async function removeNote(id, owner) {
+ const result = await Note.deleteOne({ _id: id, owner })
 
-async function editNote(id, title){
-
-    const notes = await getNotes()
-   
-    notes.forEach((note) => {
-        if(note.id === id){
-            note.title = title
-        }
-    })
-   
-       await fs.writeFile(notesPath, JSON.stringify(notes))
-       console.log(chalk.bgBlue('Note was edited'))
-   
-   }
-
-async function removeNote(id){
-
-    const notes = await getNotes()
-
-    notes.forEach((note, index) => {
-        if(note.id === id){
-             notes.splice(index, 1)
-        
-        }
-    })
-
-    await fs.writeFile(notesPath, JSON.stringify(notes))
-    console.log(chalk.bgRed('Note was removed'))
+ if(result.matchedCount === 0){
+  throw new Error('No note to delete')
+}
+  console.log(chalk.bgRed("Note was removed"));
 }
 
-async function getNotes(){
-    const notes = await fs.readFile(notesPath, {encoding: 'utf-8'})
-    return Array.isArray(JSON.parse(notes)) ? JSON.parse(notes) : []
-}
-
-async function printNotes(){
-const notes = await getNotes()
-console.log(chalk.bgBlue('Here is the list of notes: '))
-notes.forEach(note => {
-    console.log(chalk.blue(`${note.id } ${note.title}`))
-});
+async function getNotes() {
+  const notes = await Note.find()
+  return notes;
 }
 
 module.exports = {
-    addNote, printNotes, removeNote, editNote, getNotes
-}
+  addNote,
+  removeNote,
+  editNote,
+  getNotes,
+};
